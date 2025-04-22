@@ -36,10 +36,16 @@ class SplashSCR extends StatefulWidget {
 class _SplashSCRState extends State<SplashSCR> {
   @override
   void initState() {
-    Timer(Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => SurahIndexSCR()));
-    });
+    Timer(
+      Duration(seconds: 3),
+      () {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SurahIndexSCR(),
+            ));
+      },
+    );
 
     // TODO: implement initState
     super.initState();
@@ -48,7 +54,6 @@ class _SplashSCRState extends State<SplashSCR> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.brown[900],
       body: Center(child: Image.asset("assets/images/quran.png")),
     );
   }
@@ -66,14 +71,14 @@ class _SurahIndexSCRState extends State<SurahIndexSCR> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView.builder(
-        itemCount: quran.totalSurahCount,
+        itemCount: quran.totalMadaniSurahs,
         itemBuilder: (context, index) {
           return ListTile(
             onTap: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => DetailSurah(index + 1),
+                    builder: (context) => DetailSurah(index+1),
                   ));
             },
             leading: CircleAvatar(
@@ -83,9 +88,11 @@ class _SurahIndexSCRState extends State<SurahIndexSCR> {
               quran.getSurahNameArabic(index + 1),
               style: GoogleFonts.amiriQuran(),
             ),
-            subtitle: Text(quran.getSurahNameEnglish(index + 1)),
+            subtitle: Text(
+              quran.getSurahNameEnglish(index + 1),
+              style: GoogleFonts.amiriQuran(),
+            ),
             trailing: Column(
-              mainAxisSize: MainAxisSize.min,
               children: [
                 quran.getPlaceOfRevelation(index + 1) == "Makkah"
                     ? Image.asset(
@@ -98,7 +105,7 @@ class _SurahIndexSCRState extends State<SurahIndexSCR> {
                         width: 30,
                         height: 30,
                       ),
-                Text("verses" + quran.getVerseCount(index+1).toString())
+                Text("Verses" + quran.getVerseCount(index + 1).toString())
               ],
             ),
           );
@@ -109,8 +116,8 @@ class _SurahIndexSCRState extends State<SurahIndexSCR> {
 }
 
 class DetailSurah extends StatefulWidget {
-  var surahNum;
-  DetailSurah(this.surahNum, {super.key});
+  var surahNumber;
+   DetailSurah(this.surahNumber, {super.key});
 
   @override
   State<DetailSurah> createState() => _DetailSurahState();
@@ -121,28 +128,25 @@ class _DetailSurahState extends State<DetailSurah> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(quran.getSurahName(widget.surahNum)),
+        title: Text(quran.getSurahName(widget.surahNumber)),
       ),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(15.0),
           child: ListView.builder(
-            itemCount: quran.getVerseCount(widget.surahNum),
+            itemCount: quran.getVerseCount(widget.surahNumber),
             itemBuilder: (context, index) {
               return ListTile(
                 title: Text(
-                  quran.getVerse(widget.surahNum, index + 1,
-                      verseEndSymbol: true),
+                  quran.getVerse(widget.surahNumber, index + 1, verseEndSymbol: true),
                   textAlign: TextAlign.right,
                   style: GoogleFonts.amiriQuran(),
                 ),
-                subtitle: Text(
-                  quran.getVerseTranslation(widget.surahNum, index + 1,
-                     
-                      translation: quran.Translation.urdu),
+                subtitle:Text(
+                  quran.getVerseTranslation(widget.surahNumber, translation: quran.Translation.urdu, index + 1, ),
                   textAlign: TextAlign.right,
                   style: TextStyle(fontFamily: "jameel"),
-                ),
+                ) ,
               );
             },
           ),
