@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:lecture02mushaf/AudioIndexSurah.dart';
 import 'package:quran/quran.dart' as quran;
 import 'package:google_fonts/google_fonts.dart';
 
@@ -42,7 +43,7 @@ class _SplashSCRState extends State<SplashSCR> {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => SurahIndexSCR(),
+              builder: (context) => ButtonScreen(),
             ));
       },
     );
@@ -58,6 +59,42 @@ class _SplashSCRState extends State<SplashSCR> {
     );
   }
 }
+
+class ButtonScreen extends StatefulWidget {
+  const ButtonScreen({super.key});
+
+  @override
+  State<ButtonScreen> createState() => _ButtonScreenState();
+}
+
+class _ButtonScreenState extends State<ButtonScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ElevatedButton(onPressed: () { 
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Audioindexsurah(),));
+            }, child: Text("Recitation | Mushaf")),
+            ElevatedButton(onPressed: () { 
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SurahIndexSCR() ,));
+            }, child: Text("Read  | Mushaf")),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+
 
 class SurahIndexSCR extends StatefulWidget {
   const SurahIndexSCR({super.key});
@@ -78,7 +115,7 @@ class _SurahIndexSCRState extends State<SurahIndexSCR> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => DetailSurah(index+1),
+                    builder: (context) => DetailSurah(index + 1),
                   ));
             },
             leading: CircleAvatar(
@@ -117,7 +154,7 @@ class _SurahIndexSCRState extends State<SurahIndexSCR> {
 
 class DetailSurah extends StatefulWidget {
   var surahNumber;
-   DetailSurah(this.surahNumber, {super.key});
+  DetailSurah(this.surahNumber, {super.key});
 
   @override
   State<DetailSurah> createState() => _DetailSurahState();
@@ -138,15 +175,20 @@ class _DetailSurahState extends State<DetailSurah> {
             itemBuilder: (context, index) {
               return ListTile(
                 title: Text(
-                  quran.getVerse(widget.surahNumber, index + 1, verseEndSymbol: true),
+                  quran.getVerse(widget.surahNumber, index + 1,
+                      verseEndSymbol: true),
                   textAlign: TextAlign.right,
                   style: GoogleFonts.amiriQuran(),
                 ),
-                subtitle:Text(
-                  quran.getVerseTranslation(widget.surahNumber, translation: quran.Translation.urdu, index + 1, ),
+                subtitle: Text(
+                  quran.getVerseTranslation(
+                    widget.surahNumber,
+                    translation: quran.Translation.urdu,
+                    index + 1,
+                  ),
                   textAlign: TextAlign.right,
                   style: TextStyle(fontFamily: "jameel"),
-                ) ,
+                ),
               );
             },
           ),
