@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
@@ -16,21 +17,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
@@ -47,7 +33,7 @@ class SurahIndexSCR extends StatefulWidget {
 }
 
 class _SurahIndexSCRState extends State<SurahIndexSCR> {
-  Map mapresp = {};
+  Map map = {};
   List list = [];
 
   Future apicallkardo() async {
@@ -56,8 +42,8 @@ class _SurahIndexSCRState extends State<SurahIndexSCR> {
 
     if (response.statusCode == 200) {
       setState(() {
-        mapresp = jsonDecode(response.body);
-        list = mapresp["data"];
+        map = jsonDecode(response.body);
+        list = map["data"];
       });
     }
   }
@@ -66,7 +52,6 @@ class _SurahIndexSCRState extends State<SurahIndexSCR> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
     apicallkardo();
   }
 
@@ -76,16 +61,99 @@ class _SurahIndexSCRState extends State<SurahIndexSCR> {
       body: ListView.builder(
         itemCount: list.length,
         itemBuilder: (context, index) {
+          var surah = list[index];
           return ListTile(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetailSurah(surah["number"]),
+                  ));
+            },
             leading: CircleAvatar(
-              child: Text(list[index]["number"].toString()),
+              child: Text(surah["number"].toString()),
             ),
-            title: Text(list[index]["name"]),
-            subtitle: Text(list[index]["englishName"]),
-            trailing: Text(list[index]["numberOfAyahs"].toString()),
+            title: Text(surah["name"] + " | " + surah["englishName"]),
+            subtitle: Text(surah["englishNameTranslation"]),
+            trailing: Text("Verses \n ${surah["numberOfAyahs"]}"),
           );
         },
       ),
+    );
+  }
+}
+
+class DetailSurah extends StatefulWidget {
+  var surahNum;
+  DetailSurah(this.surahNum, {super.key});
+
+  @override
+  State<DetailSurah> createState() => _DetailSurahState();
+}
+
+class _DetailSurahState extends State<DetailSurah> {
+  Map map = {};
+  List list = [];
+
+  Map umap = {};
+  List ulist = [];
+  Future apicallkardo() async {
+    http.Response response = await http.get(
+        Uri.parse("https://api.alquran.cloud/v1/surah/${widget.surahNum}"));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        map = jsonDecode(response.body);
+        list = map["data"]["ayahs"];
+      });
+    }
+  }
+
+  Future translation() async {
+    http.Response response = await http.get(Uri.parse(
+        "https://api.alquran.cloud/v1/surah/${widget.surahNum}/ur.maududi"));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        umap = jsonDecode(response.body);
+        ulist = umap["data"]["ayahs"];
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    apicallkardo();
+    translation();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: list.isNotEmpty
+          ? ListView.builder(
+              itemCount: list.length,
+              itemBuilder: (context, index) {
+                var surah = list[index];
+                return ListTile(
+                  title: Text(
+                    surah["text"],
+                    textAlign: TextAlign.right,
+                    style: GoogleFonts.amiri(),
+                  ),
+                  subtitle: Text(
+                    ulist[index]["text"],
+                    textAlign: TextAlign.right,
+                    style: GoogleFonts.notoNastaliqUrdu(),
+                  ),
+                );
+              },
+            )
+          : Center(
+              child: CircularProgressIndicator(),
+            ),
     );
   }
 }
