@@ -35,25 +35,27 @@ class _SignupState extends State<Signup> {
   TextEditingController name = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
-
+  dynamic data = "";
   Future<void> apicallkarden() async {
-    final url = Uri.parse("http://192.168.0.162/mit_api_flutter/index.php");
+    final url = Uri.parse("http://192.168.0.102/mit_api_flutter/signup.php");
 
-    var response = await http.post(url, body: {
+    http.Response response = await http.post(url, body: {
       'name': name.text,
       'email': email.text,
-      'password': password.text,
+      'password': password.text
     });
 
-    var data = jsonDecode(response.body);
-
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(data["message"])));
+    data = jsonDecode(response.body);
+    if (!mounted) return;
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(data["message"])),
+  );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: ListView(
         children: [
           TextField(
             controller: name,
@@ -64,7 +66,17 @@ class _SignupState extends State<Signup> {
           TextField(
             controller: password,
           ),
-          ElevatedButton(onPressed: apicallkarden, child: Text("Submit"))
+          SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
+              onPressed: () {
+                apicallkarden();
+                print(data["message"]);
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(data["message"])));
+              },
+              child: Text("Submit"))
         ],
       ),
     );
