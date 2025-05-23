@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "349711920027",
+    "project_id": "mitdemo-82202",
+    "storage_bucket": "mitdemo-82202.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:349711920027:android:754a8215a07808a7d0cf3e",
+        "android_client_info": {
+          "package_name": "com.example.lecture12firebase_db"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCO6hwsz_BWdy9MhX28R6JyryIX5bk-Ml0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
